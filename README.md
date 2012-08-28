@@ -1,0 +1,1 @@
+This is my vim config repository. I configured this step-by-stem for a few month, and using it for a long time for now. It is useful for editing almost every text file type, especially python scripts.

@@ -1,0 +1,4 @@
+.mru_files
+.netrwhist
+sessions/
+*.pyc
