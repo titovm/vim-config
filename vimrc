@@ -1,4 +1,4 @@
-" Конфигурационный файл jungo {{{
+" Конфигурационный файл asyncee, 2013 {{{
 " Спасибо всем, кто выложил в открытый доступ статьи,
 " конфигурационные файлы для vim, описание плагинов.
 " Это помогло мне в создании этого конфига.
@@ -15,20 +15,6 @@
 " Команды, которые должны быть выполнены первыми {{{
 call pathogen#runtime_append_all_bundles()
 call pathogen#helptags()
-" }}}
-" Команды для интерпретатора python {{{
-" заставляем vim импортировать модуль django.db
-" vim надо открывать из директории проекта с settings.py
-"python << EOF
-"import os
-"import sys
-"import vim
-"sys.path.append("/home/jungo/django/")
-"sys.path.append(os.getcwd())
-"if 'settings.py' in os.listdir(os.getcwd()):
-"    settings = os.path.split(os.getcwd())[1] + '.settings'
-"    os.environ['DJANGO_SETTINGS_MODULE'] = settings
-"EOF
 " }}}
 " Общие настройки {{{
 set nocompatible                        "режим несовместимости с vi
@@ -99,11 +85,6 @@ filetype plugin indent on               "обнаружение типа фай�
 syntax on                               "подсветка синтаксиса
 "}}}
 "{{{ Общие маппинги
-" Maps Alt-[h,j,k,l] to resizing a window split
-"map <silent> . <C-w><
-"map <silent> , <C-w>>
-"map <silent> m <C-W>-
-"map <silent> n <C-W>+
 
 " отключаем фишку smartindent, когда строка, начинающаяся с # пишется без отступов
 inoremap # X#
@@ -139,7 +120,7 @@ highlight TabLine term=bold cterm=bold ctermbg=236 ctermfg=144
 "let g:solarized_termcolors=256
 " }}}
 " подсветка скобок
-au BufWinEnter * :source /home/jungo/.vim/bundle/rainbow-parenthesis/plugin/RainbowParenthsis.vim
+au BufWinEnter * :source $HOME/.vim/bundle/rainbow-parenthesis/plugin/RainbowParenthsis.vim
 " }}}
 " Настройки автодополнения {{{
 " any keyword:           CTRL-P CTRL-N
@@ -181,47 +162,6 @@ function! NumbersToggle()
         setlocal number
     endif
 endfunction
-" }}}
-" Компиляция по F5, запуск по F9 {{{
-" Запускает компиляцию в зависимости от наличия Makefile
-" Спасибо, http://welinux.ru/post/3478/
-function! BindF5_C()
-    "http://habrahabr.ru/blogs/vim/40369/
-    if filereadable("CMakeLists.txt")
-        set makeprg=make
-         map <F5>      :w<CR>:!cmake \.<CR>:make clean<CR>:make<CR>:cw<CR>
-        imap <F5> <ESC>:w<CR>:!cmake \.<CR>:make clean<CR>:make<CR>:cw<CR>
-    else
-        if filereadable("Makefile")
-            set makeprg=make
-             map <F5>      :w<CR>:make clean<CR>:make<CR>:cw<CR>
-            imap <F5> <ESC>:w<CR>:make clean<CR>:make<CR>:cw<CR>
-        else
-             map <F5>      :w<CR>:make %:r<CR>:cw<CR>
-            imap <F5> <ESC>:w<CR>:make %:r<CR>:cw<CR>
-        endif
-    endif
-endfunction
-au FileType c,cc,cpp,h,hpp,s call BindF5_C()
-
-function! BindF9_C()
-    "http://habrahabr.ru/blogs/vim/40369/
-    if filereadable("CMakeLists.txt")
-        set makeprg=make
-         map <F9>      :w<CR>:!cmake \.<CR>:make<CR>:cw<CR>:!clear & ./%<<CR>
-        imap <F9> <ESC>:w<CR>:!cmake \.<CR>:make<CR>:cw<CR>:!clear & ./%<<CR>
-    else
-        if filereadable("Makefile")
-            set makeprg=make
-             map <F9>      :w<CR>:make<CR>:cw<CR>:!clear & ./%<<CR>
-            imap <F9> <ESC>:w<CR>:make<CR>:cw<CR>:!clear & ./%<<CR>
-        else
-             map <F9>      :w<CR>:make %:r<CR>:cw<CR>:!clear & ./%<<CR>
-            imap <F9> <ESC>:w<CR>:make %:r<CR>:cw<CR>:!clear & ./%<<CR>
-        endif
-    endif
-endfunction
-au FileType c,cc,cpp,h,hpp,s call BindF9_C()
 " }}}
 " }}}
 " Русификация {{{
@@ -267,7 +207,6 @@ au BufRead,BufNewFile *.* match BadWhitespace /\s\+$/
 " http://svn.python.org/projects/python/trunk/Misc/Vim/vimrc
 " Полная подсветка синтаксиса
 let python_highlight_all=1
-"au BufRead,BufNewFile *.py,*.pyw :TlistOpen
 " автодополнение для питона и компании
 autocmd FileType python set omnifunc=pythoncomplete#Complete
 autocmd FileType javascript set omnifunc=javascriptcomplete#CompleteJS
@@ -282,28 +221,9 @@ au FileType html set filetype=htmldjango
 "
 " Фолдинг, основанный на отступах
 au BufRead,BufNewFile *.py,*.pyw set foldmethod=indent
-"au BufRead,BufNewFile *.py,*.pyw set foldnestmax=2
 
 " файлы jinja2 это та же jinja
 au BufRead,BufNewFile *.jinja2 setfiletype jinja
-" }}}
-" Настройки для С/C++ {{{
-au FileType c,cpp,h inoremap {<CR> {<CR>}<Esc>0ko
-au FileType c,cpp,h inoremap #d #define 
-au FileType c,cpp,h inoremap #i #include 
-au FileType c,cpp,h inoremap #f /* FIXME:   */<Esc>hhhi
-au FileType c,cpp,h inoremap #t /* TODO:   */<Esc>hhhi
-au FileType c,cpp,h inoremap ;; <END>;<CR>
-au FileType c,cpp,h source /home/jungo/.vim/bundle/vim-opengl/syntax/opengl.vim
-
-" автоматически открывать окно автодополнения
-au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
-
-"a.vim - переключение между cpp и h файлами
-map ga :A<CR>
-
-" автоматически открывать TagList
-"au Filetype c,cpp,h :TlistToggle
 " }}}
 " Настройки для набора текста {{{
 au BufRead,BufNewFile *.txt setfiletype text
@@ -329,35 +249,14 @@ imap <silent> <C-F> <C-^>X<Esc>:call MyKeyMapHighlight()<CR>a<C-H>
 nmap <silent> <C-F> a<C-^><Esc>:call MyKeyMapHighlight()<CR>
 vmap <silent> <C-F> <Esc>a<C-^><Esc>:call MyKeyMapHighlight()<CR>gv
 
-" показывает все FIXME, TODO (show fixes)
-map sf :bufdo vimgrep /TODO\\|FIXME/gj %<CR>:cw<CR>
-" ctags
-map tc :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
-" файлы с тегами
-set tags+=./tags
-set tags+=~/.vim/tags/cpp
-set tags+=~/.vim/tags/gl
-set tags+=~/.vim/tags/sdl
-set tags+=~/.vim/tags/qt4
-set tags+=~/.vim/tags/qt4_another
-set tags+=~/.vim/tags/oil
-set tags+=~/.vim/tags/opencv2
-set tags+=~/.vim/tags/opencv
 " taglist.vim - список тегов
-map tg :TlistToggle<CR>
-map tt :NERDTreeToggle<CR>
+map <Leader>tt :NERDTreeToggle<CR>
 
 " сессии
 map <F6> :source $HOME/.vim/sessions/last.vim<CR>
 map <F7> :source $HOME/.vim/sessions/work.vim<CR>
 map <F8> :mksession! $HOME/.vim/sessions/work.vim<CR>
 
-" форматируем заголовок
-"  ---------
-"  заголовок
-"  ---------
-map ,,h :python format_header()
-imap ,,h :python format_header()
 " }}}
 " Горячие клавиши для плагинов {{{
 " некоторые маппинги оставлены по дефолту
@@ -377,14 +276,6 @@ nmap <silent> <Leader>b :CommandTBuffer<CR>
 nmap <silent> <unique> <Leader>ee :ErrorAtCursor<CR>
 map <Leader>es :cn<CR>
 map <Leader>eS :cp<CR>
-" }}}
-" snipmate.vim {{{
-" use c-j instead of tab
-"ino <c-j> <c-r>=TriggerSnippet()<cr>
-"snor <c-j> <esc>i<right><c-r>=TriggerSnippet()<cr>
-" }}}
-" yankring.vim {{{
-nnoremap <silent> sy :YRShow<CR>
 " }}}
 " pep8.vim {{{
 "let g:pep8_map='<Leader>pp'
@@ -433,14 +324,9 @@ hi ErrorMsg term=standout cterm=bold ctermfg=7 ctermbg=1
 let errormarker_warningtypes = "wWiI"
 " показать ошибку под курсором
 " }}}
-" mru.vim {{{
-let MRU_File = '/home/jungo/.vim/.mru_files'    "список файлов
-let MRU_Window_Height = 15                      "высота списка
-let MRU_Auto_Close = 1                          "автозакрывать после выбора
-" }}}
 " nerd-tree.vim {{{
 let NERDChristmasTree = 1
-let NERDTreeBookmarksFile = '/home/jungo/.vim/.nerd_tree_bookmarks'
+let NERDTreeBookmarksFile = '~/.vim/.nerd_tree_bookmarks'
 let NERDTreeQuitOnOpen = 1
 let NERDTreeDirArrows = 1
 
@@ -457,46 +343,6 @@ let g:SuperTabRetainCompletionDuration = "insert"
 let g:SuperTabLongestEnhanced = 1
 let g:SuperTabLongestHighlight = 1
 " }}}
-" taglist.vim {{{
-let Tlist_Auto_Highlight_Tag = 1            "автоподсветка тегов
-let Tlist_Auto_Open = 0                     "автооткрывать при старте
-let Tlist_Auto_Update = 1                   "автообновление
-let Tlist_Close_On_Select = 0               "закрывать при выборе тега
-let Tlist_GainFocus_On_ToggleOpen = 1       "получать фокус при открытии
-let Tlist_Compact_Format = 0                "компактный формат отображения
-let Tlist_Display_Prototype = 0             "отображать прототипы
-let Tlist_Display_Tag_Scope = 1             "отображать область видимости
-let Tlist_Exit_OnlyWindow = 1               "закрывать вим, когда остался только теглист
-let Tlist_File_Fold_Auto_Close = 1          "автозакрывать фолды для других файлов
-let Tlist_Show_One_File = 0                 "показывать теги только текущего буффера
-let Tlist_Process_File_Always = 1           "автообновлять список тегов даже если окно закрыто
-let Tlist_Use_Right_Window = 1              "список тегов справа
-let Tlist_WinWidth = 40                     "ширина окна
-let Tlist_Ctags_Cmd = "/usr/bin/ctags"
-" }}}
-" omnicppcomplete.vim {{{
-let OmniCpp_GlobalScopeSearch = 1
-let OmniCpp_NamespaceSearch = 1
-let OmniCpp_DisplayMode = 0
-let OmniCpp_ShowScopeInAbbr = 0
-let OmniCpp_ShowPrototypeInAbbr = 1
-let OmniCpp_ShowAccess = 1
-let OmniCpp_DefaultNamespaces = ["std", "_GLIBCXX_STD"] 
-let OmniCpp_MayCompleteDot = 1
-let OmniCpp_MayCompleteArrow = 1
-let OmniCpp_MayCompleteScope = 1
-"let OmniCpp_SelectFirstItem = 1
-let OmniCpp_LocalSearchDecl = 0
-" }}}
-" yankring.vim [uninstalled] {{{
-let g:yankring_max_history = 1000
-let g:yankring_dot_repeat_yank = 0      "если 1, то . повторяет копирование
-let g:yankring_paste_using_g = 1        "создать привязки gp и gP (p и P)
-let g:yankring_manage_numbered_reg = 0  "если 1, то поддерживать цифровые регистры [1p, 2p ...]
-let g:yankring_history_dir = '/home/jungo/.vim/'
-let g:yankring_history_file = '.yankring_history'
-let g:yankring_window_increment = 50    "увеличить окно при нажатии пробела
-" }}}
 " pylint {{{
 " если 0 то не вызывать pylint при сохранении файла
 let g:pylint_onwrite = 0
@@ -507,85 +353,5 @@ let g:pylint_cwindow = 1
 " }}}
 " pyflakes {{{
 let g:pyflakes_use_quickfix = 0
-" }}}
-" pydoc {{{
-" <Leader>pw - открыть справку по слову под курсором
-" }}}
-" ropevim {{{
-" сейчас ropevim установлен через python2 setup.py install, поэтому
-" он у меня в PYTHONPATH, но если он больше не заводится (например,
-" при переустановке ОС, тогда можно (и даже нужно) использовать такой
-" вот способ: добавить rope и ropevim в PYTHONPATH и просорсить
-" ropevim.vim
-"let $PYTHONPATH .= ":/home/jungo/.vim/rope:/home/jungo/.vim/bundle/ropevim"
-"source /home/jungo/.vim/bundle/ropevim.vim
-"source /usr/lib/python2.7/site-packages/ropevim-0.3_rc-py2.7.egg/ropevim.vim
-" автодополнение по M-/ или M-? по дефолту
-let ropevim_vim_completion=1
-" показывать доп. информацию в дополнении
-let ropevim_extended_complete=1
-" без комментариев
-let ropevim_enable_autoimport=1
-" автоимпортировать эти модули
-let g:ropevim_autoimport_modules = ["os", "shutil", "django"]
-" если в ropevim еще не открыт проект, то попробовать угадать какой
-" проект надо открыть и открыть его без вопросов
-let ropevim_guess_project=1
-" включить более короткие горячие клавиши
-let ropevim_enable_shortcuts=1
-" короткие горячие клавиши
-"================  ============================
-"Key               Command
-"================  ============================
-"M-/               RopeCodeAssist
-"M-?               RopeLuckyAssist
-"C-c g             RopeGotoDefinition
-"C-c d             RopeShowDoc
-"C-c f             RopeFindOccurrences
-"================  ============================
-"
-" стандартные горячие клавиши:
-"
-"================  ============================
-"Key               Command
-"================  ============================
-"C-x p o           RopeOpenProject
-"C-x p k           RopeCloseProject
-"C-x p f           RopeFindFile
-"C-x p 4 f         RopeFindFileOtherWindow
-"C-x p u           RopeUndo
-"C-x p r           RopeRedo
-"C-x p c           RopeProjectConfig
-"C-x p n [mpfd]    RopeCreate(Module|Package|File|Directory)
-                  "RopeWriteProject
-
-"C-c r r           RopeRename
-"C-c r l           RopeExtractVariable
-"C-c r m           RopeExtractMethod
-"C-c r i           RopeInline
-"C-c r v           RopeMove
-"C-c r x           RopeRestructure
-"C-c r u           RopeUseFunction
-"C-c r f           RopeIntroduceFactory
-"C-c r s           RopeChangeSignature
-"C-c r 1 r         RopeRenameCurrentModule
-"C-c r 1 v         RopeMoveCurrentModule
-"C-c r 1 p         RopeModuleToPackage
-
-"C-c r o           RopeOrganizeImports
-"C-c r n [vfcmp]   RopeGenerate(Variable|Function|Class|Module|Package)
-
-"C-c r a /         RopeCodeAssist
-"C-c r a g         RopeGotoDefinition
-"C-c r a d         RopeShowDoc
-"C-c r a f         RopeFindOccurrences
-"C-c r a ?         RopeLuckyAssist
-"C-c r a j         RopeJumpToGlobal
-"C-c r a c         RopeShowCalltip
-                  "RopeAnalyzeModule
-
-                  "RopeAutoImport
-                  "RopeGenerateAutoimportCache
-"===============   ============================
 " }}}
 " }}}
