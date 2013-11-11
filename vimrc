@@ -349,7 +349,7 @@ let g:pylint_onwrite = 0
 " если 0 отключить отображение информации о рейтинге кода
 let g:pylint_show_rate = 0
 " если 0 не открывать окно quickfix
-let g:pylint_cwindow = 1
+let g:pylint_cwindow = 0
 " }}}
 " pyflakes {{{
 let g:pyflakes_use_quickfix = 0
