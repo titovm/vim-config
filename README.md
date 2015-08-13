@@ -1,7 +1,9 @@
 ####Asyncee's vim configuration setup.
 
-
 Yet another hacker's vim config.
+
+![screenshot](https://raw.githubusercontent.com/asyncee/vim-config/develop/looknfeel.png)
+
 
 ####Installation
 
