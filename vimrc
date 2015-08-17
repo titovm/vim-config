@@ -10,7 +10,6 @@
 " F2                       toggle paste mode
 " CTRL+SHIFT+N             navigate to file by name (pycharm)
 " CTRL+F12                 show tags (pycharm)
-" F/f                      enable global/local folding
 " CTRL+Y                   copy to system buffer
 
 
@@ -51,6 +50,7 @@ set tildeop                             "~ теперь оператор
 set iminsert=0                  " раскладка по умолчанию для ввода - английская
 set imsearch=0                  " раскладка по умолчанию для поиска - английская
 set nofoldenable
+set foldmethod=indent
 set wildignore+=*.pyc
 set wildignore+=*_build/*
 set wildignore+=*/coverage/*
