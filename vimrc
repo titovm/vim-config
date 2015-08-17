@@ -229,6 +229,10 @@ let g:powerline_config_overrides = {'common': {'default_top_theme': 'unicode'}}
 " cd ~/.vim/bundle
 " git clone https://github.com/kien/ctrlp.vim.git
 let g:ctrlp_map = '<C-S-N>'  " PyCharm compatible shortcut
+let g:ctrlp_user_command = [
+    \ '.git', 'cd %s && git ls-files . -co --exclude-standard',
+    \ 'find %s -type f'
+    \ ]
 
 
 " Settings for jedi-vim
